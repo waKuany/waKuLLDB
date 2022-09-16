@@ -1,8 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
 # waKuLLDB的主程序
 # codeBy： waKuany
 # wakuLLDB的所有导出命令都将在这里列出
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+"""
 
 """
 脚本基础：
@@ -57,14 +60,6 @@ def frame_address(debugger, command, result, internal_dict):
 
 
 
-# 打印出该地址在LLDB中的位置
-def jump_address(debugger, command, result, internal_dict):
-    print >> result, "哎呀呀，前方施工，请绕行"
-
-# 查看断点是否路过
-def go_or_notgo(debugger, command, result, internal_dict):
-    print >> result, "哎呀呀，前方施工，请绕行"
-
 
 def breakmore(debugger, command, result, internal_dict):
     pth = shlex.split(command)[0]
@@ -72,12 +67,15 @@ def breakmore(debugger, command, result, internal_dict):
     lines = files.readlines()
     for line in lines:
         debugger.HandleCommand('ba %s' % line)
+    num = len(lines)
+
+    for i in range(0, num):
+        debugger.HandleCommand('breakpoint  command add {}'.format(i+1))
+        
     #print >> result, "%s" %(files)
 
 
 def __lldb_init_module(debugger, internal_dict):
-    debugger.HandleCommand('command script add -f LLDBscript.breakpoint_address ba')
-    debugger.HandleCommand('command script add -f LLDBscript.jump_address ja')
-    debugger.HandleCommand('command script add -f LLDBscript.go_or_notgo isgo')
-    debugger.HandleCommand('command script add -f LLDBscript.frame_address sa')
-    debugger.HandleCommand('command script add -f LLDBscript.breakmore bm')
+    debugger.HandleCommand('command script add -f waKuLLDB.breakpoint_address ba')
+    debugger.HandleCommand('command script add -f waKuLLDB.frame_address sa')
+    debugger.HandleCommand('command script add -f waKuLLDB.breakmore bm')
