@@ -7,18 +7,11 @@
 # wakuLLDB的所有导出命令都将在这里列出
 """
 
-"""
-脚本基础：
-    debugger:当前调试器对象
-    command:命令参数
-    result:执行命令后返回的参数
-    internal_dict:当前脚本所有变量和函数
-"""
-
 import lldb
 import re
 import os
 import shlex
+import logs.log
 
 
 def get_aslr():
@@ -74,12 +67,21 @@ def breakmore(debugger, command, result, internal_dict):
         
     #print >> result, "%s" %(files)
 
+
+
 def breakpoint_callback(frame, bp_loc, internal_dict):
-    print(bp_loc)
+    """
+    断点回调函数
+    """
     this_thread = frame.GetThread()
     this_process = this_thread.GetProcess()
+    logs.log.log_bpinfo(frame)
     bp_loc.SetEnabled(False)
+    this_target = this_process.GetTarget()
+    this_target.GetDebugger().HandleCommand('c')
     this_process.Continue()
+
+
 
 
 def __lldb_init_module(debugger, internal_dict):
