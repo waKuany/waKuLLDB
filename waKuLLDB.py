@@ -11,7 +11,7 @@ import lldb
 import re
 import os
 import shlex
-import logs.log
+import CallBack
 
 
 def get_aslr():
@@ -63,25 +63,8 @@ def breakmore(debugger, command, result, internal_dict):
     num = len(lines)
 
     for i in range(0, num):
-        debugger.HandleCommand('breakpoint  command add -F waKuLLDB.breakpoint_callback  {}'.format(i+1))
+        debugger.HandleCommand('breakpoint  command add -F waKuLLDB.CallBack.breakpoint_callback  {}'.format(i+1))
         
-    #print >> result, "%s" %(files)
-
-
-
-def breakpoint_callback(frame, bp_loc, internal_dict):
-    """
-    断点回调函数
-    """
-    this_thread = frame.GetThread()
-    this_process = this_thread.GetProcess()
-    logs.log.log_bpinfo(frame)
-    bp_loc.SetEnabled(False)
-    this_target = this_process.GetTarget()
-    this_target.GetDebugger().HandleCommand('c')
-    this_process.Continue()
-
-
 
 
 def __lldb_init_module(debugger, internal_dict):
